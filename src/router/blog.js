@@ -39,12 +39,12 @@ const handleBlogRouter = (req, res) => {
         })
     }
     if (method === 'POST' && req.path === '/api/blog/update') {
-        const updateData = updateBlog(id, req.body)
-        if (updateData) {
-            return new SuccessModel(updateData, '成功')
-        } else {
-            return new ErrorModel('失败')
-        }
+        const result = updateBlog(id, req.body)
+
+        return result.then(updateData => {
+            if (updateData) return new SuccessModel(updateData, '成功')
+            else return (new ErrorModel(updateData, '失败'))
+        })
     }
     if (method === 'POST' && req.path === '/api/blog/delete') {
         const delData = delBlog(id)
