@@ -38,11 +38,22 @@ const serverHandle = (req, res) => {
     req.path = url.split('?')[0]
     // 解析query
     req.query = querystring.parse(url.split('?')[1])
-
-    // 解析Postshuju 
+    // 解析Cookie
+    req.cookie = {}
+    const cookieStr = req.headers.cookie || ''
+    cookieStr.split(';').forEach(item => {
+        if (!item) return item
+        const arr = item.split('=')
+        const key = arr[0].trim() // 去除首尾空格
+        const val = arr[1].trim()
+        req.cookie[key] = val
+    })
+    // 解析Post数据
     getPostData(req).then(postData => {
         // 存储postData
         req.body = postData
+
+        // 路由
         // blog Router
         const blogResult = handleBlogRouter(req, res)
         if (blogResult) {
@@ -54,7 +65,9 @@ const serverHandle = (req, res) => {
         // user Router
         const userData = handleUserRouter(req, res)
         if (userData) {
-            res.end(JSON.stringify(userData))
+            userData.then(data => {
+                res.end(JSON.stringify(data))
+            })
             return
         }
 

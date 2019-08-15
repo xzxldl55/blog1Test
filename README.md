@@ -1,5 +1,9 @@
 # 流程解释
 ![流程图](./assets/process.png)
+- 登录：
+    - 核心：登录效验，登录信息存储
+    - 每次发送http请求，都会将请求域的cookie一起发给server，server可以修改cookie并返回给浏览器
+    - cookie不跨域
 # Server Dev
 - 服务稳定性
     - server的恶意攻击与误操作

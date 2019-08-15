@@ -1,7 +1,12 @@
+const { exec } = require('../db/mysql')
+
 const loginOperation = (username, password) => {
-    console.log(username, password)
-    if (username === 'xzxldl' && password === '123') return true
-    else return false
+    let sql = `
+        select username, realname from user where username='${username}' and password='${password}'
+    `
+    return exec(sql).then(rows => {
+        return rows[0] || {}
+    })
 }
 
 module.exports = {

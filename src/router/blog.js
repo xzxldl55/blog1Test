@@ -47,12 +47,11 @@ const handleBlogRouter = (req, res) => {
         })
     }
     if (method === 'POST' && req.path === '/api/blog/delete') {
-        const delData = delBlog(id)
-        if (delData) {
-            return new SuccessModel(delData, '成功')
-        } else {
-            return new ErrorModel('失败')
-        }
+        const result = delBlog(id, req.body.author) // 传入author保证只能自己删除自己的文章（author真实环境后端从session获取）
+        return result.then(deleteData => {
+            if (deleteData) return new SuccessModel(deleteData, '成功')
+            else return (new ErrorModel(deleteData, '失败'))
+        })
     }
 }
 
