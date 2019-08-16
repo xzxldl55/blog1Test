@@ -17,7 +17,6 @@ const handleBlogRouter = (req, res) => {
     if (method === 'GET' && req.path === '/api/blog/list') {
         const { author, keyword } = req.query || ''
         const result = getList(author, keyword)
-        // console.log(result)
         // return a Promise Obj to app
         return result.then(listData => {
             return (new SuccessModel(listData, '成功'))
