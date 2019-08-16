@@ -39,11 +39,12 @@ const newBlog = (blogData = {}) => {
 const updateBlog = (id, blogData = {}) => {
     const title = blogData.title
     const content = blogData.content
-
+    const author = blogData.author
+    
     let sql = `
-        update blogs set title="${ title }", content='${ content }' where id=${ id }
+    update blogs set title="${ title }", content='${ content }' where id=${ id } and author='${author}'
     `
-
+    
     return exec(sql).then(updateData => {
         if (updateData.affectedRows > 0) return true
         else return false
