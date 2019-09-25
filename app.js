@@ -137,7 +137,7 @@ const serverHandle = (req, res) => {
         }
 
         // 404
-        res.writeHead(404, { 'Content-type': 'text/p;ain' })
+        res.writeHead(404, { 'Content-type': 'text/plain' })
         res.write("404")
         res.end()
     })

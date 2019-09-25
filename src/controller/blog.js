@@ -6,9 +6,9 @@ const getList = (author, keyword) => {
         from blogs
         where 1=1
     `
-    if (author) sql += ` AND author=${author}`
-    if (keyword) sql += ` AND title like "${ '%' + keyword + '%' }"`
-    sql += `order by createtime desc;`
+    if (author) sql += ` AND author='${author}'`
+    if (keyword) sql += ` AND title like "${ '%' + keyword + '' + '%' }"`
+    sql += ` order by createtime desc;`
     // console.log(sql)
     return exec(sql)
 }
