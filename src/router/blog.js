@@ -1,82 +1,120 @@
-const { 
-    getList, 
-    getDetail, 
-    newBlog, 
-    updateBlog, 
-    delBlog 
+const {
+  getList,
+  getDetail,
+  newBlog,
+  updateBlog,
+  delBlog
 } = require('../controller/blog')
-const { 
-    SuccessModel, 
-    ErrorModel 
+const {
+  SuccessModel,
+  ErrorModel
 } = require('../model/resModel')
+
 
 // 登录验证中间件
 const loginCheck = (req) => {
-    if (!req.session.username) {
-        return Promise.resolve(new ErrorModel('尚未登录'))
-    } 
-    return
+  if (!req.session.username) {
+    return Promise.resolve(
+      new ErrorModel('请先登录')
+    )
+  }
 }
 
+
 const handleBlogRouter = (req, res) => {
-    const method = req.method
-    const id = req.query.id || -1
+  const method = req.method
+  const id = req.query.id
 
-    if (method === 'GET' && req.path === '/api/blog/list') {
-        const { author, keyword } = req.query || ''
-        const result = getList(author, keyword)
-        // return a Promise Obj to app
-        return result.then(listData => {
-            return (new SuccessModel(listData, '成功'))
-        })
-    }
-    if (method === "GET" && req.path === '/api/blog/detail') {
-        const result = getDetail(id)
+  // 获取博客列表
+  if (method === 'GET' && req.path === '/api/blog/list') {
+    let author = req.query.author || ''
+    const keyword = req.query.keyword || ''
 
-        return result.then(detailData => {
-            return (new SuccessModel(detailData, '成功'))
-        })
+    // 针对admin界面做过滤
+    if (req.query.isadmin) {
+      const loginCheckResult = loginCheck(req)
+      if (loginCheckResult) { // 未登录
+        return loginCheckResult
+      }
+      // 强制只能查看到自己的博客
+      author = req.session.username
     }
-    if (method === 'POST' && req.path === '/api/blog/new') {
-        const loginMessage = loginCheck(req)
-        if (loginMessage) {
-            return loginMessage
-        }
-        
-        req.body.author = req.session.username
-        const result = newBlog(req.body)
-        return result.then(id => {
-            return (new SuccessModel({
-                id: id
-            }, '成功'))
-        })
-    }
-    if (method === 'POST' && req.path === '/api/blog/update') {
-        const loginMessage = loginCheck(req)
-        if (loginMessage) {
-            return loginMessage
-        }
 
-        req.body.author = req.session.username
-        const result = updateBlog(id, req.body)
-        return result.then(updateData => {
-            if (updateData) return new SuccessModel(updateData, '成功')
-            else return (new ErrorModel(updateData, '失败'))
-        })
-    }
-    if (method === 'POST' && req.path === '/api/blog/delete') {
-        const loginMessage = loginCheck(req)
-        if (loginMessage) {
-            return loginMessage
-        }
+    const result = getList(author, keyword)
 
-        req.body.author = req.session.username
-        const result = delBlog(id, req.body.author) // 传入author保证只能自己删除自己的文章（author真实环境后端从session获取）
-        return result.then(deleteData => {
-            if (deleteData) return new SuccessModel(deleteData, '成功')
-            else return (new ErrorModel(deleteData, '失败'))
-        })
+    // 以Promise形式返回出去
+    return result.then(listData => {
+      if (listData) {
+        return new SuccessModel(listData)
+      } else {
+        return new ErrorModel('没有数据')
+      }
+    })
+  }
+
+  // 博客详情
+  if (method === 'GET' && req.path === '/api/blog/detail') {
+    const result = getDetail(id)
+    return result.then(data => {
+      if (data) {
+        return new SuccessModel(data)
+      } else {
+        return new ErrorModel('没有查询到该博文')
+      }
+    })
+
+  }
+
+  // 新建博客
+  if (method === 'POST' && req.path === '/api/blog/new') {
+    // 登录验证，如果有值说明未登录
+    const loginCheckResult = loginCheck(req)
+    if (loginCheckResult) {
+      return loginCheckResult
     }
+
+    req.body.author = req.session.username
+    const result = newBlog(req.body)
+    return result.then(data => {
+      return new SuccessModel(data)
+    })
+  }
+
+  // 更新博客
+  if (method === 'POST' && req.path === '/api/blog/update') {
+    const loginCheckResult = loginCheck(req)
+    if (loginCheckResult) {
+      return loginCheckResult
+    }
+
+    const result = updateBlog(id, req.body)
+    return result.then(val => {
+      if (val) {
+        return new SuccessModel(val)
+      } else {
+        return new ErrorModel('更新失败')
+      }
+    })
+  }
+  
+  // 删除博客
+  if (method === 'POST' && req.path === '/api/blog/delete') {
+    const loginCheckResult = loginCheck(req)
+    if (loginCheckResult) {
+      return loginCheckResult
+    }
+
+    const author = req.session.username
+    const result = delBlog(id, author)
+    
+    return result.then(val => {
+      if (val) {
+        return new SuccessModel(val)
+      } else {
+        return new ErrorModel('删除失败')
+      }
+    })
+  }
 }
 
 module.exports = handleBlogRouter

@@ -1,45 +1,61 @@
 const {
-    loginOperation
+  login
 } = require('../controller/user')
-const { 
-    SuccessModel, 
-    ErrorModel 
+const {
+  SuccessModel,
+  ErrorModel
 } = require('../model/resModel')
 const {
-    redisGet,
-    redisSet
+  redisSet,
+  redisGet
 } = require('../db/redis')
 
-const getCookieExpires  = () => {
-    const d = new Date()
-    d.setTime(d.getTime() + (24 * 60 * 60 * 1000))
-    return d.toGMTString()
-}
+
 
 const handleUserRouter = (req, res) => {
-    const method = req.method
+  const method = req.method
 
-    if (method === 'POST' && req.path === '/api/user/login') {
-        const { username, password } = req.body
-        const result = loginOperation(username, password)
-        return result.then(loginData => {
-            if (loginData.username) {
-                // 添加登录信息cookie--> path=/表示在整个站点都能访问; httpOnly表示只允许服务端修改，客户端不允许修改
-                // ！！！注意：cookie前后端都可见，如果存放username（手机号邮箱或昵称）会有一定安全性问题，所以可以存放userId这类不与用户信息直接相关的数据
-                // res.setHeader('Set-Cookie', `username=${loginData.username}; path=/; httpOnly; expirse=${getCookieExpires()}`)
-                req.session.username = loginData.username
-                req.session.realname = loginData.realname
-                // 同步到redis中
-                redisSet(req.sessionId, req.session)
-                console.log(req.session)
-                return new SuccessModel(req.session, '登陆成功')
-            } else {
-                return new ErrorModel('登录失败')
-            }
-        })
-    }
+  // 登录
+  if (method === 'POST' && req.path === '/api/user/login') {
+    const { username, password } = req.body
+    // const { username, password } = req.query
+    const result = login(username, password)
+    return result.then(data => {
+      if (data.username) {
+        // 登陆后设置当前请求对应用户的session，这样对应app.js中每个请求都会去提取该用户的session数据，再来对该用户进行后续验证
+        /**
+         * 登录成功后，将设置到
+         * SESSION_DATA[当前用户userId].username = xxx
+         * SESSION_DATA[当前用户userId].realname = xxx
+         * 如此，又因为在res中会将该userId注入cookie中
+         * 所以该userId对应用户之后的请求都将会在session解析时，获取到其对应的session
+         */
+        req.session.username = data.username
+        req.session.realname = data.realname
+        // 同步到redis
+        redisSet(req.sessionId, req.session)
+        
+        return new SuccessModel(data)
+      } else {
+        return new ErrorModel('登录失败')
+      }
+    })
+  }
 
-    
+  // 登录验证测试
+  // if (method === 'GET' && req.path === '/api/user/login-test') {
+  //   if (req.session.username) {
+  //     return Promise.resolve(
+  //       new SuccessModel({
+  //         session: req.session['username']
+  //       })
+  //     )
+  //   } else {
+  //     return Promise.resolve(
+  //       new ErrorModel('尚未登录')
+  //     )
+  //   }
+  // }
 }
 
 module.exports = handleUserRouter
