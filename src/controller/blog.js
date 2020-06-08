@@ -2,6 +2,7 @@ const {
   exec,
   escape
 } = require('../db/mysql')
+const xss = require('xss')
 
 // 控制器，用于对接口的数据进行处理
 const getList = (author, keyword) => {
@@ -30,8 +31,8 @@ const getDetail = (id) => {
 const newBlog = (blogData = {}) => {
   let { title, content, author } = blogData
   const createtime = Date.now()
-  title = escape(title)
-  content = escape(content)
+  title = xss(escape(title))
+  content = xss(escape(content))
   author = escape(author)
 
   let sql = `insert into blog(title, content, createtime, author) values(${title}, ${content}, '${createtime}', ${author});`

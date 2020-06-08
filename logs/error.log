@@ -4,3 +4,5 @@ MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check 
 MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%'喜爱'% order by createtime desc' at line 1 -- time: 1591504414002
 MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%''% order by createtime desc' at line 1 -- time: 1591504415085
 MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%'喜'% order by createtime desc' at line 1 -- time: 1591504454472
+MySQL Error: Error: ER_BAD_FIELD_ERROR: Unknown column 'd801f56c2584882c11a23ca289c1784c' in 'where clause' -- time: 1591605068098
+MySQL Error: Error: ER_BAD_FIELD_ERROR: Unknown column '986c5694b99bfbd436ae42ca1bc88428' in 'where clause' -- time: 1591605123778

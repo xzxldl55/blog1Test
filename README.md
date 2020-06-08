@@ -101,8 +101,13 @@
         更严重的，在`;`后面加点毁灭性代码`delete xxx`
     - 预防：使用MySQL的escape函数处理输入内容，在所有能拼接SQL语句的地方都需要使用escape
 - XSS攻击：窃取前端cookie内容
-    - 
+    - 方式：在页面展示内容中掺杂JS代码，以获取网页信息
+        - 如：在写帖子时，写入`<script>alert(document.cookie)</scritp>`
+    - 预防措施：转换生成JS的特殊字符
+        - ![](./assets/特殊字符.jpg)
+        - 使用xss工具自动帮我们转译这些特殊字符
 - 密码加密
+    - 用户密码加密，将加密后的数据存入数据库
 
 
 # Server Dev

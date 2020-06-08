@@ -2,8 +2,15 @@ const {
   exec,
   escape
 } = require('../db/mysql')
+const {
+  genPassword
+} = require('../utils/cryp')
 
 const login = (username, password) => {
+  
+  // 生成加密密码
+  password = genPassword(password)
+
   /**
    * 使用escape防止SQL注入
    *  escape会将里面的内容用''包裹起来，保证内容作为一个整体以字符串形式出现（把你内容里的'变成\'转译成字符串而不是'标识符）
@@ -11,6 +18,8 @@ const login = (username, password) => {
    */
   username = escape(username)
   password = escape(password)
+
+
   const sql = `
     select username, realname from user where username=${username} and password=${password};
   `
