@@ -34,5 +34,6 @@ function dbEnd () {
 
 module.exports = {
   exec,
-  dbEnd
+  dbEnd,
+  escape: mysql.escape // 导出mysql.escape方法，防止SQL注入
 }

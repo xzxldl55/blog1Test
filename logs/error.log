@@ -1,1 +1,6 @@
 MySQL Error: Error: ER_SERVER_SHUTDOWN: Server shutdown in progress -- time: 1591434646916
+MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '--' and password='12321312321'' at line 1 -- time: 1591501836423
+MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%'喜'% order by createtime desc' at line 1 -- time: 1591504413057
+MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%'喜爱'% order by createtime desc' at line 1 -- time: 1591504414002
+MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%''% order by createtime desc' at line 1 -- time: 1591504415085
+MySQL Error: Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%'喜'% order by createtime desc' at line 1 -- time: 1591504454472

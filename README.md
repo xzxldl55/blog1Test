@@ -69,7 +69,7 @@
 - 系统没有日志，等于人没眼睛
 - 使用文件操作（NodeJS stream），将日志存储在文件中
     - 为什么不存储在Redis中
-        - 日志非常大放在redis中代价高
+        - 日志非常大，放在redis中代价高
         - 日志对性能要求低
     - 为什么不放在MySQL中
         - MySQL主要用于结构化数据，日志不一定是结构化的数据
@@ -87,6 +87,22 @@
     - 使用readline（基于stream），来一行一行读取日志
 - 1、访问日志access log（每次的http请求访问都将记录下来）
 - 2、自定义日志（自定义事件、错误记录等）
+
+
+# 安全：
+- sql注入：窃取数据库内容
+    - 最原始、简单的攻击：输入一个sql片段，最终拼接成一段攻击代码
+        - 如登录时username输入`xzxldl'; -- `，这样在执行sql时，将被拼接为：如此，后面对password的验证就被注释掉了，攻击者不需要密码就能随意登录他人的账号。
+        ```
+          select * 
+          from user 
+          where username='xzxldl'; -- ' password=随便输个密码
+        ```
+        更严重的，在`;`后面加点毁灭性代码`delete xxx`
+    - 预防：使用MySQL的escape函数处理输入内容，在所有能拼接SQL语句的地方都需要使用escape
+- XSS攻击：窃取前端cookie内容
+    - 
+- 密码加密
 
 
 # Server Dev
