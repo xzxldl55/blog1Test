@@ -1,3 +1,5 @@
+![](../zongjie.jpg)
+
 # NodeJS处理http：
 - get && queryString
 - post && postData
@@ -125,3 +127,37 @@
     - 预防XSS攻击与Sql注入
 - 集群与服务拆分
     - 产品发展快，流量激增-->扩展机器与服务拆分来承载更多流量
+
+# 线上：
+- 使用PM2工具：
+    - 与nodemon的区别：pm2是后台运行的，会将控制台权限移交出来
+    - 基本使用：
+        - 安装：`npm install pm2 -g`
+        - 使用：`pm2 start xxx.js`
+    - 常用命令：
+        - `pm2 satrt ...`：...可以是我们项目的启动文件，也可以是一个pm2的配置文件
+        - `pm2 list`：查看当前启动的进程列表
+        - `pm2 restart <AppName>/<id>`：通过appname或者id来重启进程
+        - `pm2 stop <AppName>/<id>`：停止服务，还能重启
+        - `pm2 delete <AppName>/<id>`：删除进程服务
+        - `pm2 info <AppName>/<id>`：进程信息
+        - `pm2 log <AppName>/<id>`：进程日志打印情况，展示项目中的console（同时pm2也将自动将其保存到文件中）
+        - `pm2 monit <AppName>/<id>`：查看其使用的内存及CUP情况
+    - 解决问题：
+        - 服务器稳定性
+        - 充分利用服务器硬件资源
+        - 日志
+    - 功能：
+        - 进程守护，系统崩溃自动重启
+        - 启动多进程，充分利用CUP与内存
+        - 自带日志记录
+    - 进程守护：
+        - 直接使用node或nodemon运行，当进程崩溃时将无法访问 || pm2则将自动进行重启，使得当出现错误后，整个服务仍旧能够继续使用
+    - 多进程(instance)：
+        - 使用目的：
+            - 充分利用服务器的硬件资源（CUP，内存）；
+            - 为更多用户提供服务；
+            - 多进程防护，防止一个进程崩溃时，导致服务无法使用；
+        - 多进程与redis：
+            - 多进程之间内存是无法共享的
+            - 所以将session数据存储在redis中，共享数据
