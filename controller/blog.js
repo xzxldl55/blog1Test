@@ -45,7 +45,7 @@ const newBlog = (blogData = {}) => {
 }
 
 const updateBlog = (id, blogData = {}) => {
-  const { title, content } = blogData
+  let { title, content } = blogData
   title = escape(title)
   content = escape(content)
   id = escape(id)
