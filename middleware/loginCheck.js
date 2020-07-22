@@ -2,13 +2,10 @@ const {
   ErrorModel
 } = require('../model/resModel')
 
-module.exports = (req, res, next) => {
-  if (req.session.username) {
-    next()
+module.exports = async (ctx, next) => {
+  if (ctx.session.username) {
+    await next()
     return
-  } else {
-    res.json(
-      new ErrorModel('请先登录！')
-    )
   }
+  ctx.body = new ErrorModel('您尚未登陆')
 }

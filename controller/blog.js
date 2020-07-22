@@ -5,7 +5,7 @@ const {
 const xss = require('xss')
 
 // 控制器，用于对接口的数据进行处理
-const getList = (author, keyword) => {
+const getList = async (author, keyword) => {
   let sql = `select * from blog where 1=1 `
   if (author) {
     author = escape(author)
@@ -16,19 +16,18 @@ const getList = (author, keyword) => {
     sql += `and title like ${keyword} `
   }
   sql += `order by createtime desc;`
-  return exec(sql)
+  return await exec(sql)
 }
 
-const getDetail = (id) => {
+const getDetail = async (id) => {
   id = escape(id)
   let sql = `select * from blog where id=${id};`
   // 返回单条数据
-  return exec(sql).then(rows => {
-    return rows[0]
-  })
+  const rows = await exec(sql)
+  return rows[0]
 }
 
-const newBlog = (blogData = {}) => {
+const newBlog = async (blogData = {}) => {
   let { title, content, author } = blogData
   const createtime = Date.now()
   title = xss(escape(title))
@@ -37,14 +36,13 @@ const newBlog = (blogData = {}) => {
 
   let sql = `insert into blog(title, content, createtime, author) values(${title}, ${content}, '${createtime}', ${author});`
 
-  return exec(sql).then(insertData => {
-    return {
-      id: insertData.insertId
-    }
-  })
+  const insertData = await exec(sql)
+  return {
+    id: insertData.insertId
+  }
 }
 
-const updateBlog = (id, blogData = {}) => {
+const updateBlog = async (id, blogData = {}) => {
   let { title, content } = blogData
   title = escape(title)
   content = escape(content)
@@ -52,29 +50,29 @@ const updateBlog = (id, blogData = {}) => {
 
   let sql = `update blog set title=${title}, content=${content} where id=${id};`
 
-  return exec(sql).then(updateData => {
-    if (updateData.affectedRows > 0) {
-      return true
-    } else {
-      return false
-    }
-  })
+  const updateData = await exec(sql)
+
+  if (updateData.affectedRows > 0) {
+    return true
+  } else {
+    return false
+  }
 }
 
-const delBlog = (id, author) => {
+const delBlog = async (id, author) => {
   id = escape(id)
   author = escape(author)
   let sql = `delete from blog where id=${id} and author=${author};`
 
-  return exec(sql).then(delData => {
-    if (delData.affectedRows > 0) {
-      return true
-    } else {
-      return false
-    }
-  })
+  const delData = await exec(sql)
+  if (delData.affectedRows > 0) {
+    return true
+  } else {
+    return false
+  }
 }
 
+// 这里async函数返回的都是一个Promise，所以在外面路由中间件都需要用await来接收返回值
 module.exports = {
   getList,
   getDetail,
